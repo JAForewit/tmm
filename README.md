@@ -39,16 +39,16 @@ how to handle pointers and pass-by-reference?
 // player = 1 (White)
 // AI = 2 (Black)
 
-final int X_MAX = 8;
-final int Y_MAX = 3;
+final byte X_MAX = 8;
+final byte Y_MAX = 3;
 
 // turn start at 1
-void play(int[][] board, int turn) {
+void play(byte[][] board, byte turn) {
 
     // check for game over to record state
-    int bCount = 0, wCount = 0;
-    for (int x = 0; x < X_MAX; x++) {
-        for (int y =  0; y < Y_MAX; y++) {
+    byte bCount = 0, wCount = 0;
+    for (byte x = 0; x < X_MAX; x++) {
+        for (byte y =  0; y < Y_MAX; y++) {
             if (board[x][y] == 1) wCount++;
             if (board[x][y] == 3) bCount++;
         }
@@ -127,6 +127,21 @@ void place(int[][] board, int turn) {
 
 void slide(int[][] board, int turn) {
     // try all valid slides
+    for (int x = 0; x < X_MAX; x++) {
+        for (int y =  0; y < Y_MAX; y++) {
+            // check for empty spaces
+            // check left and right
+            if (board)
+
+            if (y==0) { // top row
+                // check down    
+            } else if (y==1) { // middle row
+                // check up and down
+            } else (y==2) { // bottom row
+                // check up
+            }
+        }
+    }
     // check for no slides available
 }
 ```
