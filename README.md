@@ -30,10 +30,10 @@ iterate through all valid moves using a binary search tree
 determine wining branch based on current board positions
 
 how to handle loops?
+how to handle pointers and pass-by-reference?
 
 
-
-# Psuedo-code
+# Main
 ```Java
 // empty = 0
 // player = 1 (White)
@@ -42,12 +42,7 @@ how to handle loops?
 final int X_MAX = 8;
 final int Y_MAX = 3;
 
-int[][] b = new int[8][3];  // Board
-int[][] HM = new int[4][3]; // Horrizontal Mills
-int[] VM = new int[4];      // Vertical Mills
-
-
-
+// turn start at 1
 void play(int[][] board, int turn) {
 
     // check for game over to record state
@@ -60,6 +55,8 @@ void play(int[][] board, int turn) {
     }
     if ((bCount < 3 || wCount < 3)) {
         // record board and turn
+
+        return;
     }
 
     // determine phase
@@ -79,19 +76,34 @@ bool isMill(int x, int y) {
 
 void take(int[][] board, int turn) {
     sideToTake = (turn%2 == 0) ? 1 : 2;
-    // try all valid takes (take opposite side's piece)
+    mustTakeMill = true;
+    // try all valid takes (no mills)
     for (int x = 0; x < X_MAX; x++) {
         for (int y =  0; y < Y_MAX; y++) {
             // check for valid take
             if (board[x][y] == sideToTake && !isMill(x, y)) {
+                mustTakeMill = false;
                 board[x][y] = 0;
                 // continue play
                 play(board, turn+1);
-            } else {
-                // record board and turn (draw)
+            } 
+        }
+    }
+
+    // try all valid takes (with mills)
+    if (mustTakeMill) {
+        for (int x = 0; x < X_MAX; x++) {
+            for (int y =  0; y < Y_MAX; y++) {
+                // check for valid take
+                if (board[x][y] == sideToTake) {
+                    board[x][y] = 0;
+                    // continue play
+                    play(board, turn+1);
+                } 
             }
         }
     }
+
 }
 
 void place(int[][] board, int turn) {
@@ -99,7 +111,6 @@ void place(int[][] board, int turn) {
     for (int x = 0; x < X_MAX; x++) {
         for (int y =  0; y < Y_MAX; y++) {
             // check for valid place
-            // TODO: Copy board??
             if (board[x][y] == 0) {
                 board[x][y] = (turn%2 == 0) ? 2 : 1; 
                 if (isMill(x, y)) {
@@ -115,6 +126,7 @@ void place(int[][] board, int turn) {
 }
 
 void slide(int[][] board, int turn) {
-    // record all valid slides
+    // try all valid slides
+    // check for no slides available
 }
 ```
