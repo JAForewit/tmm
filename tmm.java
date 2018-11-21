@@ -96,12 +96,21 @@ public class tmm {
         return false;
     }
 
-    public static Boolean isMill(int[][] board, int x, int y) {
+    public static Boolean isMill(int[][] board, int row, int col) {
         //System.out.println("isMill() (" + x + ", " + y + ")");
         System.out.println("isMill()");
 
-        // vertical mill?
+        Boolean isMill = true;
+
+        //  vertical mill?
+        int side = board[0][col];
+        for (int r=1; r<MAX_ROWS; r++) {
+            if (board[r][col] != side) isMill = false;
+        }
+        if (isMill) return true;
+
         // horizontal mill?
+        // check position of target within mill (left, right, or center)
         return false;
     } 
 
