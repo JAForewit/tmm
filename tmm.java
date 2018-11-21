@@ -1,5 +1,4 @@
-
-
+import java.util.Arrays;
 
 public class tmm {
     // empty = 0
@@ -60,6 +59,43 @@ public class tmm {
         }
     }
 
+    public static Boolean isSymmetry(board, branch)  {
+        if (Arrays.deepEquals(board, branch)) return true;
+        int [][] rotate = new int[MAX_ROWS][MAX_ROWS];
+        for (int i=1; i<=3; i++) {
+            // rotate branch
+            for (int r=0; r<MAX_ROWS; r++) {
+                for (int c=0; c<MAX_COLS; c++) {
+                    rotate[r][c] = branch[r][(c+(3*i))%MAX_COLS];
+                }
+            }
+            if (Arrays.deepEquals(board, rotate)) return true;
+        }
+
+        // choose pivot column and swap three cols on either side
+        int [][] reflect = new int[MAX_ROWS][MAX_ROWS];
+        for (int pivot=0; pivot<MAX_COLS; pivot++) {
+            for (int r=0; r<MAX_ROWS; r++) {
+                reflect[r][pivot] = branch[r][pivot];
+                for (int c=1; c<=3; c++) {
+                    int leftCol = ((MAX_COLS-c) + pivot)%MAX_COLS;
+                    int rightCol = ((MAX_COLS+c) + pivot)%MAX_COLS;
+                    reflect[r][leftCol] = branch[r][rightCol];
+                }
+                //rotate the reflect
+                for (int j=1; j<=3; j++) {
+                    for (int r2=0; r2<MAX_ROWS; r2++) {
+                        for (int c2=0; c2<MAX_COLS; c2++) {
+                            rotate[r2][c2] = reflect[r2][(c2+(3*j))%MAX_COLS];
+                        }
+                    }
+                    if (Arrays.deepEquals(board, rotate)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static Boolean isMill(int[][] board, int x, int y) {
         //System.out.println("isMill() (" + x + ", " + y + ")");
         System.out.println("isMill()");
@@ -100,7 +136,6 @@ public class tmm {
                 }
             }
         }
-
     }
 
     public static void place(int[][] board, int turn) {
