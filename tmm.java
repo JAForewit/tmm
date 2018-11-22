@@ -13,14 +13,14 @@ public class tmm {
     public static void main(String[] args) {
         int[][] emptyBoard = {
             {0, 0, 0, 0, 0, 0, 0, 0},   // row 0
-            {0, 0, 0, 0, 0, 0, 0, 0},   // row 1
-            {0, 0, 0, 0, 0, 0, 0, 0}    // row 2
+            {1, 2, 0, 0, 0, 0, 0, 0},   // row 1
+            {1, 0, 0, 0, 0, 0, 0, 0}    // row 2
         };
 
         int[][] varient = {
-            {0, 0, 0, 0, 0, 0, 0, 2},   // row 0
-            {0, 0, 0, 0, 0, 0, 0, 1},   // row 1
-            {0, 0, 0, 0, 0, 0, 2, 0}    // row 2
+            {0, 0, 0, 1, 0, 0, 0, 0},   // row 0
+            {0, 0, 2, 1, 0, 0, 0, 0},   // row 1
+            {0, 0, 0, 0, 0, 0, 0, 0}    // row 2
         };
 
         System.out.println(isSymmetry(emptyBoard, varient));
@@ -68,25 +68,24 @@ public class tmm {
     }
 
     public static Boolean isSymmetry(int[][] board, int[][] branch)  {
-        printBoard(board);
-        printBoard(branch);
-
-
+        // check for equality
         if (Arrays.deepEquals(board, branch)) return true;
+
+        // rotate branch
         int [][] rotate = new int[MAX_ROWS][MAX_COLS];
         for (int i=1; i<=3; i++) {
-            // rotate branch
             for (int r=0; r<MAX_ROWS; r++) {
                 for (int c=0; c<MAX_COLS; c++) {
                     rotate[r][c] = branch[r][(c+(2*i))%MAX_COLS];
                 }
             }
+            // check rotation for equality
             System.out.println("rotation");
             printBoard(rotate);
             if (Arrays.deepEquals(board, rotate)) return true;
         }
 
-        // choose pivot column and swap three cols on either side
+        // reflect branch
         int [][] reflect = new int[MAX_ROWS][MAX_COLS];
         int leftCol,rightCol, oppositeCol;
         for (int pivotCol=0; pivotCol<MAX_COLS; pivotCol++) {
@@ -98,29 +97,84 @@ public class tmm {
                 for (int c=1; c<=3; c++) {
                     leftCol = (MAX_COLS - c + pivotCol)%MAX_COLS;
                     rightCol = (MAX_COLS + c + pivotCol)%MAX_COLS;
-                    
+
                     reflect[r][leftCol] = branch[r][rightCol];
                     reflect[r][rightCol] = branch[r][leftCol];
                 }
             }
             System.out.println("reflection");
             printBoard(reflect);
-        }
-        
 
-
-        /*//rotate the reflect
-                for (int j=1; j<=3; j++) {
-                    // rotate branch
-                    for (int r2=0; r2<MAX_ROWS; r2++) {
-                        for (int c2=0; c2<MAX_COLS; c2++) {
-                            rotate[r2][c2] = reflect[r2][(c2+(2*j))%MAX_COLS];
-                        }
+            // rotate the reflection
+            for (int i=1; i<=3; i++) {
+                for (int r=0; r<MAX_ROWS; r++) {
+                    for (int c=0; c<MAX_COLS; c++) {
+                        rotate[r][c] = reflect[r][(c+(2*i))%MAX_COLS];
                     }
-                    System.out.println("reflection rotation");
-                    printBoard(rotate);
-                    if (Arrays.deepEquals(board, rotate)) return true;
-                }*/
+                }
+                // check reflection rotation for equality
+                System.out.println("reflection rotation");
+                printBoard(rotate);
+                if (Arrays.deepEquals(board, rotate)) return true;
+            }
+        }
+
+        // check inside out symmetry
+        int[][] insideOut = new int[MAX_ROWS][MAX_COLS];
+        insideOut[0] = branch[2].clone();
+        insideOut[1] = branch[1].clone();
+        insideOut[2] = branch[0].clone();
+
+        // check for equality
+        System.out.println("insideOut");
+        printBoard(insideOut);
+        if (Arrays.deepEquals(board, insideOut)) return true;
+
+        // rotate insideOut
+        for (int i=1; i<=3; i++) {
+            for (int r=0; r<MAX_ROWS; r++) {
+                for (int c=0; c<MAX_COLS; c++) {
+                    rotate[r][c] = insideOut[r][(c+(2*i))%MAX_COLS];
+                }
+            }
+            // check rotation for equality
+            System.out.println("insideOut rotation");
+            printBoard(rotate);
+            if (Arrays.deepEquals(board, rotate)) return true;
+        }
+
+        // reflect insideOut
+        for (int pivotCol=0; pivotCol<MAX_COLS; pivotCol++) {
+            for (int r=0; r<MAX_ROWS; r++) {
+                oppositeCol = (pivotCol + 4)%MAX_COLS;
+
+                reflect[r][pivotCol] = insideOut[r][pivotCol];
+                reflect[r][oppositeCol] = insideOut[r][oppositeCol];
+                for (int c=1; c<=3; c++) {
+                    leftCol = (MAX_COLS - c + pivotCol)%MAX_COLS;
+                    rightCol = (MAX_COLS + c + pivotCol)%MAX_COLS;
+
+                    reflect[r][leftCol] = insideOut[r][rightCol];
+                    reflect[r][rightCol] = insideOut[r][leftCol];
+                }
+            }
+            System.out.println("insideOut reflection");
+            printBoard(reflect);
+
+            // rotate the reflection
+            for (int i=1; i<=3; i++) {
+                for (int r=0; r<MAX_ROWS; r++) {
+                    for (int c=0; c<MAX_COLS; c++) {
+                        rotate[r][c] = reflect[r][(c+(2*i))%MAX_COLS];
+                    }
+                }
+                // check reflection rotation for equality
+                System.out.println("insideOut reflection rotation");
+                printBoard(rotate);
+                if (Arrays.deepEquals(board, rotate)) return true;
+            }
+        }
+
         return false;
     }
 
